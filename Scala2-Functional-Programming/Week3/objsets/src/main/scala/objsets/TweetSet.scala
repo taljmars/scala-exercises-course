@@ -41,7 +41,7 @@ abstract class TweetSet extends TweetSetInterface {
    * Question: Can we implment this method here, or should it remain abstract
    * and be implemented in the subclasses?
    */
-  def filter(p: Tweet => Boolean): TweetSet = ???
+  def filter(p: Tweet => Boolean): TweetSet = filterAcc(p, new Empty)
 
   /**
    * This is a helper method for `filter` that propagetes the accumulated tweets.
@@ -54,7 +54,7 @@ abstract class TweetSet extends TweetSetInterface {
    * Question: Should we implment this method here, or should it remain abstract
    * and be implemented in the subclasses?
    */
-  def union(that: TweetSet): TweetSet = ???
+  def union(that: TweetSet): TweetSet = that.filterAcc(t => !this.contains(t), this)
 
   /**
    * Returns the tweet from this set which has the greatest retweet count.
@@ -65,7 +65,7 @@ abstract class TweetSet extends TweetSetInterface {
    * Question: Should we implment this method here, or should it remain abstract
    * and be implemented in the subclasses?
    */
-  def mostRetweeted: Tweet = ???
+  def mostRetweeted: Tweet = throw new java.util.NoSuchElementException
 
   /**
    * Returns a list containing all tweets of this set, sorted by retweet count
@@ -76,7 +76,7 @@ abstract class TweetSet extends TweetSetInterface {
    * Question: Should we implement this method here, or should it remain abstract
    * and be implemented in the subclasses?
    */
-  def descendingByRetweet: TweetList = ???
+  def descendingByRetweet: TweetList = objsets.Nil
 
   /**
    * The following methods are already implemented
@@ -107,7 +107,7 @@ abstract class TweetSet extends TweetSetInterface {
 }
 
 class Empty extends TweetSet {
-  def filterAcc(p: Tweet => Boolean, acc: TweetSet): TweetSet = ???
+  def filterAcc(p: Tweet => Boolean, acc: TweetSet): TweetSet = acc
 
   /**
    * The following methods are already implemented
@@ -124,8 +124,17 @@ class Empty extends TweetSet {
 
 class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
 
-  def filterAcc(p: Tweet => Boolean, acc: TweetSet): TweetSet = ???
-
+  def filterAcc(p: Tweet => Boolean, acc: TweetSet): TweetSet = {
+    if (p(elem)) {
+      val newSetWithElement: TweetSet = acc.incl(elem)
+      val newSet: TweetSet = left.filterAcc(p, newSetWithElement)
+      right.filterAcc(p, newSet)
+    }
+    else {
+      val newSet: TweetSet = left.filterAcc(p, acc)
+      right.filterAcc(p, newSet)
+    }
+  }
 
   /**
    * The following methods are already implemented
@@ -151,6 +160,28 @@ class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
     f(elem)
     left.foreach(f)
     right.foreach(f)
+  }
+
+  override def mostRetweeted: Tweet = {
+      descendingByRetweet.head
+  }
+
+  def addTweetDecOrderedToList(tweet: Tweet, tweetList: TweetList): Cons = {
+    if (tweetList.isEmpty) {
+      new Cons(tweet, objsets.Nil)
+    }
+    else {
+      if (tweet.retweets > tweetList.head.retweets)
+        new Cons(tweet, tweetList)
+      else
+        new Cons(tweetList.head, addTweetDecOrderedToList(tweet, tweetList.tail))
+    }
+  }
+
+  override def descendingByRetweet: TweetList = {
+    val newTweetSet = remove(elem)
+    val decendentList = newTweetSet.descendingByRetweet
+    addTweetDecOrderedToList(elem, decendentList)
   }
 }
 
@@ -180,14 +211,30 @@ object GoogleVsApple {
   val google = List("android", "Android", "galaxy", "Galaxy", "nexus", "Nexus")
   val apple = List("ios", "iOS", "iphone", "iPhone", "ipad", "iPad")
 
-  lazy val googleTweets: TweetSet = ???
-  lazy val appleTweets: TweetSet = ???
+  def agg(it: Iterator[Tweet], acc: TweetSet): TweetSet = {
+    if (it.hasNext) {
+      val tweet = it.next()
+      agg(it, acc.incl(tweet))
+    }
+    else {
+      acc
+    }
+  }
+
+  lazy val googleTweets: TweetSet = {
+    val gTweetList = google.map[Tweet](s => new Tweet(s, s, (Math.random()*100).toInt))
+    agg(gTweetList.iterator, new Empty)
+  }
+  lazy val appleTweets: TweetSet = {
+    val gTweetList = apple.map[Tweet](s => new Tweet(s, s, (Math.random()*100).toInt))
+    agg(gTweetList.iterator, new Empty)
+  }
 
   /**
    * A list of all tweets mentioning a keyword from either apple or google,
    * sorted by the number of retweets.
    */
-  lazy val trending: TweetList = ???
+  lazy val trending: TweetList = googleTweets.descendingByRetweet
 }
 
 object Main extends App {
