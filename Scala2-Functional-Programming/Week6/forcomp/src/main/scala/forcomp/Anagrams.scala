@@ -1,7 +1,5 @@
 package forcomp
 
-import scala.io.{Codec, Source}
-
 object Anagrams extends AnagramsInterface {
 
   /** A word is simply a `String`. */
@@ -35,10 +33,10 @@ object Anagrams extends AnagramsInterface {
    *
    *  Note: you must use `groupBy` to implement this method!
    */
-  def wordOccurrences(w: Word): Occurrences = w.groupBy(c=>c.toLower).map(x => (x._1, x._2.length)).toList.sorted
+  def wordOccurrences(w: Word): Occurrences = ???
 
   /** Converts a sentence into its character occurrence list. */
-  def sentenceOccurrences(s: Sentence): Occurrences = wordOccurrences(s.foldLeft[Word](new String)((x, y) => x + y))
+  def sentenceOccurrences(s: Sentence): Occurrences = ???
 
   /** The `dictionaryByOccurrences` is a `Map` from different occurrences to a sequence of all
    *  the words that have that occurrence count.
@@ -55,11 +53,10 @@ object Anagrams extends AnagramsInterface {
    *    List(('a', 1), ('e', 1), ('t', 1)) -> Seq("ate", "eat", "tea")
    *
    */
-  lazy val dictionaryByOccurrences: Map[Occurrences, List[Word]] = dictionary.groupBy(w => wordOccurrences(w)).withDefaultValue(List())
-
+  lazy val dictionaryByOccurrences: Map[Occurrences, List[Word]] = ???
 
   /** Returns all the anagrams of a given word. */
-  def wordAnagrams(word: Word): List[Word] = dictionaryByOccurrences(wordOccurrences(word))
+  def wordAnagrams(word: Word): List[Word] = ???
 
   /** Returns the list of all subsets of the occurrence list.
    *  This includes the occurrence itself, i.e. `List(('k', 1), ('o', 1))`
@@ -83,21 +80,7 @@ object Anagrams extends AnagramsInterface {
    *  Note that the order of the occurrence list subsets does not matter -- the subsets
    *  in the example above could have been displayed in some other order.
    */
-  def combinations(occurrences: Occurrences): List[Occurrences] = {
-
-    def combinations_helper(subset: Occurrences, leftOver: Occurrences): List[Occurrences] = {
-      if (leftOver.isEmpty)
-        List[Occurrences](subset)
-      else {
-        val (chead, cint) :: b = leftOver
-        val r = for (i <- 1 to cint) yield combinations_helper(subset:::List((chead, i)), b)
-        combinations_helper(subset, b) ::: r.flatten.toList
-      }
-    }
-
-    combinations_helper(List(), occurrences)
-  }
-
+  def combinations(occurrences: Occurrences): List[Occurrences] = ???
 
   /** Subtracts occurrence list `y` from occurrence list `x`.
    *
@@ -109,16 +92,7 @@ object Anagrams extends AnagramsInterface {
    *  Note: the resulting value is an occurrence - meaning it is sorted
    *  and has no zero-entries.
    */
-  def subtract(x: Occurrences, y: Occurrences): Occurrences = {
-    val yMap = y.toMap.withDefaultValue(0)
-    for {
-      (xc,xi) <- x
-      sub = xi - yMap(xc)
-      if sub > 0
-    }
-    yield (xc, sub)
-  }
-
+  def subtract(x: Occurrences, y: Occurrences): Occurrences = ???
 
   /** Returns a list of all anagram sentences of the given sentence.
    *
@@ -160,26 +134,7 @@ object Anagrams extends AnagramsInterface {
    *
    *  Note: There is only one anagram of an empty sentence.
    */
-  def sentenceAnagrams(sentence: Sentence): List[Sentence] = {
-    val lettersOcc: Occurrences = sentenceOccurrences(sentence)
-
-    def helper(current: Sentence, leftOccurrence: Occurrences): List[Sentence]  = {
-      if (leftOccurrence.isEmpty)
-        List(current)
-      else {
-        val allComb = combinations(leftOccurrence)
-        val r = for {
-          comb <- allComb
-          if !comb.isEmpty
-          wordListForSentence: List[Word] = dictionaryByOccurrences(comb)
-          t = wordListForSentence.map(w => helper(current:::List(w), subtract(leftOccurrence, comb)))
-        }
-        yield t.flatten
-        r.flatten
-      }
-    }
-    helper(List(), lettersOcc)
-  }
+  def sentenceAnagrams(sentence: Sentence): List[Sentence] = ???
 }
 
 object Dictionary {
@@ -190,8 +145,8 @@ object Dictionary {
       sys.error("Could not load word list, dictionary file not found")
     }
     try {
-      val s = Source.fromInputStream(wordstream)(Codec.UTF8)
-      s.getLines().toList
+      val s = scala.io.Source.fromInputStream(wordstream)
+      s.getLines.toList
     } catch {
       case e: Exception =>
         println("Could not load word list: " + e)
@@ -201,4 +156,3 @@ object Dictionary {
     }
   }
 }
-
