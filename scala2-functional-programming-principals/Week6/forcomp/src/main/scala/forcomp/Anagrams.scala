@@ -90,7 +90,7 @@ object Anagrams extends AnagramsInterface {
         List[Occurrences](subset)
       else {
         val (chead, cint) :: b = leftOver
-        val r = for (i <- 1 to cint) yield combinations_helper(subset:::List((chead, i)), b)
+        val r = for {i <- 1 to cint} yield combinations_helper(subset:::List((chead, i)), b)
         combinations_helper(subset, b) ::: r.flatten.toList
       }
     }
@@ -163,23 +163,22 @@ object Anagrams extends AnagramsInterface {
   def sentenceAnagrams(sentence: Sentence): List[Sentence] = {
     val lettersOcc: Occurrences = sentenceOccurrences(sentence)
 
-    def generateSentences(current: Sentence, leftOccurrence: Occurrences): List[Sentence]  = {
+    def generateSentences(leftOccurrence: Occurrences): List[Sentence]  = {
       if (leftOccurrence.isEmpty)
-        List(current)
+        List(List())
       else {
         val allComb = combinations(leftOccurrence)
-        val r = for {
+        for {
           comb <- allComb
           if !comb.isEmpty
-          wordListForSentence: List[Word] = dictionaryByOccurrences(comb)
-          t = wordListForSentence.map(w => generateSentences(current:::List(w), subtract(leftOccurrence, comb)))
+          word <- dictionaryByOccurrences(comb)
+          t <- generateSentences(subtract(leftOccurrence, comb))
         }
-        yield t.flatten
-        r.flatten
+        yield word::t
       }
     }
 
-    generateSentences(List(), lettersOcc)
+    generateSentences(lettersOcc)
   }
 }
 
