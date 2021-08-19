@@ -207,8 +207,11 @@ trait DecoderInstances {
   implicit def listDecoder[A](implicit decoder: Decoder[A]): Decoder[List[A]] =
     Decoder.fromFunction {
       json => json match {
-        case Json.Arr(arr) => Option(arr.foldLeft[List[A]](List[A]())((z: List[A], j: Json) => z:::(if (decoder.decode(j).isEmpty) List[A]() else List[A](decoder.decode(j).get))))
-        case _ => None
+        case Json.Arr(arr) =>
+          val decodeItemsOptionList = arr.map(decoder.decode(_))
+          if (!decodeItemsOptionList.filter(_.isEmpty).isEmpty) Option.empty
+          else Option(decodeItemsOptionList.map(_.get))
+        case _ => Option.empty
       }
     }
 
@@ -219,7 +222,7 @@ trait DecoderInstances {
   def field[A](name: String)(implicit decoder: Decoder[A]): Decoder[A] =
     Decoder.fromFunction {
       case Json.Obj(obj) if obj.contains(name) => decoder.decode(obj.get(name).get)
-      case _ => None
+      case _ => Option.empty
     }
 }
 
@@ -239,7 +242,7 @@ trait PersonCodecs {
   implicit lazy val personDecoder: Decoder[Person] =
     Decoder.field[String]("name")
       .zip(Decoder.field[Int]("age"))
-      .transform { case (user_name: String, user_age: Int) => new Person(user_name, user_age) }
+      .transform { case (user_name: String, user_age: Int) => Person(user_name, user_age) }
 }
 
 case class Contacts(people: List[Person])
@@ -256,7 +259,7 @@ trait ContactsCodecs {
   /** The corresponding decoder for `Contact` */
   implicit lazy val contactDecoder: Decoder[Contacts] =
     Decoder.field[List[Person]]("people")
-      .transform { case (ppl: List[Person]) => new Contacts(ppl) }
+      .transform { case (ppl: List[Person]) => Contacts(ppl) }
 
 }
 
