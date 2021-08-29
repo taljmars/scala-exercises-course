@@ -42,6 +42,7 @@ object AkkaPracticeActors extends App{
 
       case WRITING_COMPLETED(name) =>
         totalImages = totalImages - 1
+        println(s"Done $name")
         if (totalImages == 0) {
           println("Download Completed")
           context.stop(writersPool)
