@@ -1,0 +1,14 @@
+name: SOC Validator
+on: [pull_request]
+
+jobs:
+  soc-validator:
+    if: ${{ github.base_ref == 'main' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Commit Type
+        uses: gsactions/commit-message-checker@v1
+        with:
+          pattern: '(^[0-9]+)'
+          error: "Your Pull-Request must start with Monday's Pulse ID"
+      
