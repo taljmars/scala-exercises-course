@@ -9,17 +9,17 @@ jobs:
   soc-validator:
     runs-on: ubuntu-latest
     steps:
-      - name: Check Commit Pulse!
-        uses: gsactions/commit-message-checker@v1
-        with:
-          excludeDescription: 'true' # optional: this excludes the description body of a pull request
-          excludeTitle: 'true' # optional: this excludes the title of a pull request
-          checkAllCommitMessages: 'true' # optional: this checks all commits associated with a pull request
+#       - name: Check Commit Pulse!
+#         uses: gsactions/commit-message-checker@v1
+#         with:
+#           excludeDescription: 'true' # optional: this excludes the description body of a pull request
+#           excludeTitle: 'true' # optional: this excludes the title of a pull request
+#           checkAllCommitMessages: 'true' # optional: this checks all commits associated with a pull request
 
-#           pattern: '([0-9]+){6,}'    
-          pattern: '[^.|\s]*([0-9]+){6,} (.|\s)*'
-          accessToken: ${{ secrets.GITHUB_TOKEN }}
-          error: "Your Pull-Request commit message must contain Monday's Pulse ID"
+# #           pattern: '([0-9]+){6,}'    
+#           pattern: '[^.|\s]*([0-9]+){6,} (.|\s)*'
+#           accessToken: ${{ secrets.GITHUB_TOKEN }}
+#           error: "Your Pull-Request commit message must contain Monday's Pulse ID"
           
       - name: Get PR Commits
         id: 'get-pr-commits'
