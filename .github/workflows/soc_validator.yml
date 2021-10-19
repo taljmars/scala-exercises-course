@@ -7,25 +7,11 @@ jobs:
   soc-validator:
     runs-on: ubuntu-latest
     steps:
-        
-      - name: checkout
-        uses: actions/checkout@v2
-        env:
-          message: ${{ github.event.head_commit.message }}
-      - name: show commit message
-        run : echo "$DAY_OF_WEEK $GITHUB_EVENT_NAME"
-        
-      - name: Get PR Commits
-        id: 'get-pr-commits'
-        uses: tim-actions/get-pr-commits@master
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          
       - name: Check Commit Pulse
         uses: gsactions/commit-message-checker@v1
         with:
 #           excludeDescription: 'true' # optional: this excludes the description body of a pull request
-#           excludeTitle: 'true' # optional: this excludes the title of a pull request
+          excludeTitle: 'true' # optional: this excludes the title of a pull request
 #           checkAllCommitMessages: 'true' # optional: this checks all commits associated with a pull request
           pattern: '(^[0-9]+)'
           error: "Your Pull-Request commit message must start with Monday's Pulse ID"
