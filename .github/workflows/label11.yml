@@ -21,7 +21,7 @@ jobs:
           message: ${{ github.event.head_commit.message }}
           
 #       - name: get commit message
-#         run: |
+#         run: | 
 #            echo ::set-env name=commitmsg::$(git log --format=%B -n 1 ${{ github.event.after }})
       - name: show commit message
         run : echo "$DAY_OF_WEEK $GITHUB_EVENT_NAME"
