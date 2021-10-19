@@ -6,16 +6,35 @@
 # https://github.com/actions/labeler
 
 name: Labeler11
-on: [pull_request, push]
+on: [pull_request]
 
 jobs:
   prod-check:
     #if: ${{ github.base_ref == 'main' }}
     runs-on: ubuntu-latest
+    env:
+      DAY_OF_WEEK: ${{ github.event.head_commit.message }}
     steps:
+      - name: checkout
+        uses: actions/checkout@v2
+        env:
+          message: ${{ github.event.head_commit.message }}
+          
 #       - name: get commit message
-#         run: |
+#         run: | 
 #            echo ::set-env name=commitmsg::$(git log --format=%B -n 1 ${{ github.event.after }})
       - name: show commit message
-        run : echo ${{ github.event.after }}
-      - run: echo "Deploying to production server on branch $GITHUB_BASE_REF $GITHUB_HEAD_REF XYZ $GITHUB_REF"
+        run : echo "$DAY_OF_WEEK $GITHUB_EVENT_NAME"
+        
+      - name: Get PR Commits
+        id: 'get-pr-commits'
+        uses: tim-actions/get-pr-commits@master
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Check Subject Line Length
+        uses: tim-actions/commit-message-checker-with-regex@v0.3.1
+        with:
+          commits: ${{ steps.get-pr-commits.outputs.commits }}
+          pattern: '^.{0,75}(\n.*)*$'
+          error: 'Subject too long (max 75)'
