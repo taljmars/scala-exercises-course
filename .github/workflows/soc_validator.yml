@@ -24,9 +24,9 @@ jobs:
       - name: Check Commit Pulse
         uses: gsactions/commit-message-checker@v1
         with:
-          excludeDescription: 'true' # optional: this excludes the description body of a pull request
-          excludeTitle: 'true' # optional: this excludes the title of a pull request
-          checkAllCommitMessages: 'true' # optional: this checks all commits associated with a pull request
+#           excludeDescription: 'true' # optional: this excludes the description body of a pull request
+#           excludeTitle: 'true' # optional: this excludes the title of a pull request
+#           checkAllCommitMessages: 'true' # optional: this checks all commits associated with a pull request
           pattern: '(^[0-9]+)'
           error: "Your Pull-Request commit message must start with Monday's Pulse ID"
       
