@@ -9,14 +9,8 @@ name: Labeler11
 on: [pull_request]
 
 jobs:
-  label:
-
+  prod-check:
+    if: ${{ github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      pull-requests: write
-
     steps:
-    - uses: actions/labeler@v2
-      with:
-        repo-token: "${{ secrets.GITHUB_TOKEN }}"
+      - run: echo "Deploying to production server on branch $GITHUB_REF"
