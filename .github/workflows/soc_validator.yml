@@ -19,5 +19,5 @@ jobs:
 #           pattern: '([0-9]+){6,}'    
           pattern: '[^.|\s]*([0-9]+){6,} (.|\s)*'
           accessToken: ${{ secrets.GITHUB_TOKEN }}
-          error: "Your Pull-Request commit message must contain Monday's Pulse ID"
+          warning: "Your Pull-Request commit message must contain Monday's Pulse ID"
       
