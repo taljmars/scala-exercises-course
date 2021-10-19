@@ -10,7 +10,7 @@ on: [pull_request]
 
 jobs:
   prod-check:
-    #if: ${{ github.ref == 'refs/heads/main' }}
+    #if: ${{ github.base.ref == 'main' }}
     runs-on: ubuntu-latest
     steps:
       - run: echo "Deploying to production server on branch $GITHUB_BASE_REF $GITHUB_HEAD_REF XYZ $GITHUB_REF"
