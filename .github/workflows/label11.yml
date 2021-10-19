@@ -19,10 +19,6 @@ jobs:
         uses: actions/checkout@v2
         env:
           message: ${{ github.event.head_commit.message }}
-          
-#       - name: get commit message
-#         run: | 
-#            echo ::set-env name=commitmsg::$(git log --format=%B -n 1 ${{ github.event.after }})
       - name: show commit message
         run : echo "$DAY_OF_WEEK $GITHUB_EVENT_NAME"
         
@@ -34,7 +30,12 @@ jobs:
 
       - name: Check Subject Line Length
         uses: tim-actions/commit-message-checker-with-regex@v0.3.1
+        env: 
+          MESSAGE: ${{ steps.get-pr-commits.outputs.commits }}
         with:
-          commits: ${{ steps.get-pr-commits.outputs.commits }}
+          commits: ${{ MESSAGE }}
           pattern: '^.{0,75}(\n.*)*$'
           error: 'Subject too long (max 75)'
+          
+      - name: show commit message
+        run : exit -1
