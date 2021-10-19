@@ -8,5 +8,5 @@ Link to Scala2 principals course: https://www.coursera.org/learn/scala2-function
 44
 55
 6
-7
+7x
 8
