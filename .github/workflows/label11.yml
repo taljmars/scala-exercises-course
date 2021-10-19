@@ -28,14 +28,11 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Check Subject Line Length
-        uses: tim-actions/commit-message-checker-with-regex@v0.3.1
-        env: 
-          MESSAGE: ${{ steps.get-pr-commits.outputs.commits }}
+          #################################
+      - name: Check Commit Type
+        uses: gsactions/commit-message-checker@v1
         with:
-          commits: ${{ MESSAGE }}
-          pattern: '^.{0,75}(\n.*)*$'
-          error: 'Subject too long (max 75)'
-          
-      - name: show commit message
-        run : exit -1
+          pattern: '(^[0-9]+)'
+          flags: 'gm'
+          error: 'Your first line has to Start with a number.'
+      
