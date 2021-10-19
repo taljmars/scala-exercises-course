@@ -19,5 +19,5 @@ jobs:
 #         run: |
 #            echo ::set-env name=commitmsg::$(git log --format=%B -n 1 ${{ github.event.after }})
       - name: show commit message
-        run : echo "$DAY_OF_WEEK"
+        run : echo "$DAY_OF_WEEK $GITHUB_EVENT_NAME"
       #- run: echo "Deploying to production server on branch $GITHUB_BASE_REF $GITHUB_HEAD_REF XYZ $GITHUB_REF"
