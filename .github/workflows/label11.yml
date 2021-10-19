@@ -10,7 +10,12 @@ on: [pull_request]
 
 jobs:
   prod-check:
-    #if: ${{ github.base.ref == 'main' }}
+    #if: ${{ github.base_ref == 'main' }}
     runs-on: ubuntu-latest
     steps:
+      - name: get commit message
+        run: |
+           echo ::set-env name=commitmsg::$(git log --format=%B -n 1 ${{ github.event.after }})
+      - name: show commit message
+        run : echo $commitmsg
       - run: echo "Deploying to production server on branch $GITHUB_BASE_REF $GITHUB_HEAD_REF XYZ $GITHUB_REF"
