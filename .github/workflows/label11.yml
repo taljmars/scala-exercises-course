@@ -13,8 +13,13 @@ jobs:
     #if: ${{ github.base_ref == 'main' }}
     runs-on: ubuntu-latest
     env:
-      DAY_OF_WEEK: ${{github.event.head_commit.message}}
+      DAY_OF_WEEK: ${{ github.event.head_commit.message }}
     steps:
+      - name: checkout
+        uses: actions/checkout@v2
+        env:
+          message: ${{ github.event.head_commit.message }}
+          
 #       - name: get commit message
 #         run: |
 #            echo ::set-env name=commitmsg::$(git log --format=%B -n 1 ${{ github.event.after }})
