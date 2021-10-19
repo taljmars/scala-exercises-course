@@ -43,3 +43,4 @@ jobs:
       #     # pattern: '^([0-9]+){6,} (.|\s)*'
       #     error: "Your Pull-Request commit message must contain Monday's Pulse ID"
       #     one_pass_all_pass: 'true'
+
