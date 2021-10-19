@@ -8,6 +8,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
         
+      - name: checkout
+        uses: actions/checkout@v2
+        env:
+          message: ${{ github.event.head_commit.message }}
+      - name: show commit message
+        run : echo "$DAY_OF_WEEK $GITHUB_EVENT_NAME"
+        
       - name: Get PR Commits
         id: 'get-pr-commits'
         uses: tim-actions/get-pr-commits@master
