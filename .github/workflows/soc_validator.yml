@@ -36,6 +36,7 @@ jobs:
       #   uses: tim-actions/get-pr-commits@master
       #   with:
       #     token: ${{ secrets.GITHUB_TOKEN }}
+
       # - name: Check Fixes
       #   uses: tim-actions/commit-message-checker-with-regex@v0.3.1
       #   with:
