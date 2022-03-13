@@ -1,9 +1,10 @@
 name: SOC Validator
 on:
   pull_request:
-    branches: [ main ]
+    types:
+      - closed
   push:
-    branches: [ main ]
+
 
 jobs:
   soc-validator:
@@ -13,7 +14,7 @@ jobs:
         uses: deepakputhraya/action-branch-name@master
         with:
           regex: '([0-9]+){10,}' # Regex the branch should match. This example enforces grouping
-          ignore: master  # Ignore exactly matching branch names from convention
+          ignore: main  # Ignore exactly matching branch names from convention
           min_length: 10 # Min length of the branch name
           #max_length: 20 # Max length of the branch name
 
@@ -43,3 +44,5 @@ jobs:
       #     # pattern: '^([0-9]+){6,} (.|\s)*'
       #     error: "Your Pull-Request commit message must contain Monday's Pulse ID"
       #     one_pass_all_pass: 'true'
+
+
