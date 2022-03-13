@@ -9,15 +9,38 @@ jobs:
   soc-validator:
     runs-on: ubuntu-latest
     steps:
+      - name: 'Assert Branch Naming Convention'
+        uses: deepakputhraya/action-branch-name@master
+        with:
+          regex: '([0-9]+){10,}' # Regex the branch should match. This example enforces grouping
+          allowed_prefixes: 'feature,stable,fix' # All branches should start with the given prefix
+          ignore: master  # Ignore exactly matching branch names from convention
+          min_length: 10 # Min length of the branch name
+          #max_length: 20 # Max length of the branch name
+
       - name: Check Commit Pulse!
         uses: gsactions/commit-message-checker@v1
         with:
           excludeDescription: 'true' # optional: this excludes the description body of a pull request
-          excludeTitle: 'true' # optional: this excludes the title of a pull request
-          checkAllCommitMessages: 'true' # optional: this checks all commits associated with a pull request
+          excludeTitle: 'false' # optional: this excludes the title of a pull request
+          checkAllCommitMessages: 'false' # optional: this checks all commits associated with a pull request
 
-#           pattern: '([0-9]+){6,}'    
-          pattern: '[^.|\s]*([0-9]+){6,} (.|\s)*'
+          pattern: '([0-9]+){10,}'    
+          # pattern: '[^.|\s]*([0-9]+){6,} (.|\s)*'
           accessToken: ${{ secrets.GITHUB_TOKEN }}
           error: "Your Pull-Request commit message must contain Monday's Pulse ID"
-      
+          
+      - name: Get PR Commits
+        id: 'get-pr-commits'
+        uses: tim-actions/get-pr-commits@master
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Check Fixes
+        uses: tim-actions/commit-message-checker-with-regex@v0.3.1
+        with:
+          commits: ${{ steps.get-pr-commits.outputs.commits }}
+          pattern: '([0-9]+){10,}'
+          # pattern: '^([0-9]+){6,} (.|\s)*'
+          error: "Your Pull-Request commit message must contain Monday's Pulse ID"
+          one_pass_all_pass: 'true'
