@@ -3,9 +3,8 @@ on:
   pull_request:
     types:
       - closed
-    branches: [ main ]
   push:
-    branches: [ main ]
+
 
 jobs:
   soc-validator:
@@ -15,7 +14,7 @@ jobs:
         uses: deepakputhraya/action-branch-name@master
         with:
           regex: '([0-9]+){10,}' # Regex the branch should match. This example enforces grouping
-          ignore: master  # Ignore exactly matching branch names from convention
+          ignore: main  # Ignore exactly matching branch names from convention
           min_length: 10 # Min length of the branch name
           #max_length: 20 # Max length of the branch name
 
